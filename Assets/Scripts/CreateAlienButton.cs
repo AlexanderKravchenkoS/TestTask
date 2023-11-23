@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class CreateAlienButton : MonoBehaviour
 {
     private AlienData alienData;
-    private Action<AlienData> OnCreateAlien;
+    private Action<AlienData> CreateAction;
 
-    public void Init(AlienData data, Action<AlienData> onCreateAlien)
+    public void Init(AlienData data, Action<AlienData> createAction)
     {
         alienData = data;
-        OnCreateAlien = onCreateAlien;
+        CreateAction = createAction;
         InitAlienImage();
         InitSelectButton();
     }
@@ -27,7 +27,7 @@ public class CreateAlienButton : MonoBehaviour
 
     private void Create()
     {
-        OnCreateAlien(alienData);
+        CreateAction(alienData);
         Destroy(gameObject);
     }
 }

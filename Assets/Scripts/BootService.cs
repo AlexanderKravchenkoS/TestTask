@@ -12,6 +12,8 @@ public class BootService : MonoBehaviour
     private Recources Recources;
     [SerializeField]
     private AlienCreationSystem AlienCreationSystem;
+    [SerializeField]
+    private InputService InputService;
 
     private void Start()
     {
@@ -19,7 +21,7 @@ public class BootService : MonoBehaviour
         FillInventory();
     }
 
-    private void InitAlienCreationSystem() => AlienCreationSystem.Init(Recources, CreateButton);
+    private void InitAlienCreationSystem() => AlienCreationSystem.Init(Recources, CreateButton, InputService);
 
     private void FillInventory()
     {

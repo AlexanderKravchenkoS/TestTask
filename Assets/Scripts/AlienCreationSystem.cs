@@ -1,30 +1,32 @@
 ﻿using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class AlienCreationSystem : MonoBehaviour
 {
     [SerializeField]
-    private Canvas PlaygroundCanvas;
+    private Transform playground;
 
     private Recources recources;
 
     private Action<AlienType> OnRecreateAlienButton;
+    private InputService inputService;
 
-    private const float PlaceDuration = 0.7f;
-
-    public void Init(Recources recources, Action<AlienType> createButton)
+    public void Init(Recources recources, Action<AlienType> createButton, InputService inputService)
     {
         this.recources = recources;
         OnRecreateAlienButton = createButton;
+        this.inputService = inputService;
     }
 
     public void CreateAlien(AlienData alienData)
     {
-        var alien = Instantiate(recources.AlienPrefab, PlaygroundCanvas.transform);
+        var alien = Instantiate(recources.AlienPrefab, playground);
         alien.Init(alienData, PlaceAlien);
+        inputService.SetTarget(alien);
     }
 
     private void PlaceAlien(Alien alien)
@@ -32,17 +34,7 @@ public class AlienCreationSystem : MonoBehaviour
         PlaygroundCell cell = RaycastCell(alien);
         if (cell != null)
         {
-            float scale = alien.GetComponent<RectTransform>().sizeDelta.x / cell.GetComponent<RectTransform>().sizeDelta.x;
-            alien.enabled = false;
-
-            Sequence sequence = DOTween.Sequence();
-            sequence.Append(alien.transform.DOMove(cell.transform.position, PlaceDuration));
-            sequence.Append(alien.transform.DOScale(scale, PlaceDuration));
-            sequence.AppendCallback(() =>
-                {
-                    cell.PlaceAlien(alien.Data);
-                    Destroy(alien.gameObject);
-                });
+            cell.PlaceAlien(alien);
         }
         else
         {
@@ -53,15 +45,12 @@ public class AlienCreationSystem : MonoBehaviour
 
     private PlaygroundCell RaycastCell(Alien alien)
     {
-        PointerEventData data = new PointerEventData(EventSystem.current);
-        data.position = alien.transform.position;
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(data, results);
-        foreach (RaycastResult result in results)
+        var hits = Physics.RaycastAll(alien.transform.position, Vector3.forward, 10f);
+        foreach (var hit in hits)
         {
-            if (result.gameObject.TryGetComponent(out PlaygroundCell cell))
+            if (hit.transform.TryGetComponent(out PlaygroundCell cell))
             {
-                return cell;
+                return hit.transform.GetComponent<PlaygroundCell>();
             }
         }
         return null;

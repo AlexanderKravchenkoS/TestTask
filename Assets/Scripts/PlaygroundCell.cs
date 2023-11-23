@@ -1,20 +1,17 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using DG.Tweening;
+using UnityEngine;
 
-[RequireComponent(typeof(Image))]
 public class PlaygroundCell : MonoBehaviour
 {
-    [SerializeField]
-    private Image image;
+    private Alien alien;
 
-    public void PlaceAlien(AlienData data)
-    {
-        ChangeSprite(data.Sprite);
-    }
+    private const float PlaceDuration = 0.7f;
 
-    private void ChangeSprite(Sprite sprite)
+    public void PlaceAlien(Alien alien)
     {
-        image.sprite = sprite;
-        image.color = Color.white;
+        if (this.alien != null) Destroy(this.alien.gameObject);
+        this.alien = alien;
+        alien.transform.parent = transform;
+        alien.transform.DOLocalMove(Vector3.zero, PlaceDuration);
     }
 }
