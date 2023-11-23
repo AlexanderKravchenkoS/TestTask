@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using DG.Tweening;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,9 +11,14 @@ public class AlienCreationSystem : MonoBehaviour
 
     private Recources recources;
 
-    public void Init(Recources recources)
+    private Action<AlienType> OnRecreateAlienButton;
+
+    private const float PlaceDuration = 0.7f;
+
+    public void Init(Recources recources, Action<AlienType> createButton)
     {
         this.recources = recources;
+        OnRecreateAlienButton = createButton;
     }
 
     public void CreateAlien(AlienData alienData)
@@ -25,7 +32,21 @@ public class AlienCreationSystem : MonoBehaviour
         PlaygroundCell cell = RaycastCell(alien);
         if (cell != null)
         {
-            cell.PlaceAlien(alien.Data);
+            float scale = alien.GetComponent<RectTransform>().sizeDelta.x / cell.GetComponent<RectTransform>().sizeDelta.x;
+            alien.enabled = false;
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(alien.transform.DOMove(cell.transform.position, PlaceDuration));
+            sequence.Append(alien.transform.DOScale(scale, PlaceDuration));
+            sequence.AppendCallback(() =>
+                {
+                    cell.PlaceAlien(alien.Data);
+                    Destroy(alien.gameObject);
+                });
+        }
+        else
+        {
+            OnRecreateAlienButton(alien.Data.Type);
             Destroy(alien.gameObject);
         }
     }

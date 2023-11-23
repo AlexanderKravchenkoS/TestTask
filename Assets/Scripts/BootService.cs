@@ -19,14 +19,19 @@ public class BootService : MonoBehaviour
         FillInventory();
     }
 
-    private void InitAlienCreationSystem() => AlienCreationSystem.Init(Recources);
+    private void InitAlienCreationSystem() => AlienCreationSystem.Init(Recources, CreateButton);
 
     private void FillInventory()
     {
         foreach (var item in StartInventory)
         {
-            CreateAlienButton createAlien = Instantiate(Recources.CreateAlienButton, ScrollForButtons.content);
-            createAlien.Init(Recources.GetAlienData(item), AlienCreationSystem.CreateAlien);
+            CreateButton(item);
         }
+    }
+
+    private void CreateButton(AlienType item)
+    {
+        CreateAlienButton createAlien = Instantiate(Recources.CreateAlienButton, ScrollForButtons.content);
+        createAlien.Init(Recources.GetAlienData(item), AlienCreationSystem.CreateAlien);
     }
 }

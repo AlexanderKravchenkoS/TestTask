@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7677585148198090286}
   - component: {fileID: 8682010343503784245}
   m_Layer: 6
-  m_Name: Image
+  m_Name: Alien Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,7 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d791d1902afde34c81902e30ce22ebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Image: {fileID: 8682010343503784245}
+  image: {fileID: 8682010343503784245}
 --- !u!114 &7028487104556701234
 MonoBehaviour:
   m_ObjectHideFlags: 0

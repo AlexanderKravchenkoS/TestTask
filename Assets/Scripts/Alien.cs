@@ -9,6 +9,8 @@ public class Alien : MonoBehaviour
     private AlienData data;
     private Action<Alien> placeAlien;
 
+    public Action OnDisableAction;
+
     public AlienData Data => data;
 
     public void Init(AlienData alienData, Action<Alien> placeAlien)
@@ -18,40 +20,7 @@ public class Alien : MonoBehaviour
         this.placeAlien = placeAlien;
     }
 
-    private void Update()
-    {
-#if UNITY_EDITOR
-        UpdateForEditor();
-#endif
-#if !UNITY_EDITOR
-        UpdateForMobile()
-#endif
-    }
+    private void OnDisable() => OnDisableAction?.Invoke();
 
-    private void UpdateForEditor()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            transform.position = Input.mousePosition;
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            placeAlien.Invoke(this);
-        }
-    }
-
-    private void UpdateForMobile()
-    {
-        if (Input.touchCount != 0)
-        {
-            if (Input.GetTouch(0).phase == TouchPhase.Ended)
-            {
-                placeAlien.Invoke(this);
-            }
-            if (Input.GetTouch(0).phase == TouchPhase.Moved)
-            {
-                transform.position = Input.touches[0].position;
-            }
-        }
-    }
+    public void PlaceAlien() => placeAlien.Invoke(this);
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlaygroundCell : MonoBehaviour
 {
     [SerializeField]
-    private Image Image;
+    private Image image;
 
     public void PlaceAlien(AlienData data)
     {
@@ -14,7 +14,7 @@ public class PlaygroundCell : MonoBehaviour
 
     private void ChangeSprite(Sprite sprite)
     {
-        Image.sprite = sprite;
-        Image.color = Color.white;
+        image.sprite = sprite;
+        image.color = Color.white;
     }
 }
